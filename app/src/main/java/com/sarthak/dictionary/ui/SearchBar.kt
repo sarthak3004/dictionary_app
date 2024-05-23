@@ -61,8 +61,6 @@ fun WordSearchBar(
         },
         modifier = modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFFDCE3F1),
-            unfocusedContainerColor = Color(0xFFDCE3F1),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         ),

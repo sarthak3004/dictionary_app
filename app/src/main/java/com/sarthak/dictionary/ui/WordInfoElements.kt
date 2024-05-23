@@ -3,16 +3,16 @@ package com.sarthak.dictionary.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,8 +56,8 @@ fun MeaningElement(meaning: Meaning) {
 }
 
 @Composable
-fun WordElement(word: WordItem) {
-    Column {
+fun WordElement(word: WordItem, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         Row(modifier = Modifier.padding(bottom = 8.dp)) {
             Text(
                 text = word.word,
@@ -85,23 +85,9 @@ fun WordResultScreen(wordItems: List<WordItem>, modifier: Modifier = Modifier) {
         modifier = modifier.padding(8.dp)
     ) {
         items(wordItems) {wordItem ->
-            WordElement(word = wordItem)
-            Spacer(modifier = Modifier.height(4.dp))
-            Divider(thickness = 2.dp)
-            Spacer(modifier = Modifier.height(4.dp))
+            Card(modifier = Modifier.padding(bottom = 8.dp)) {
+                WordElement(word = wordItem, Modifier.padding(8.dp))
+            }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun WordListPreview() {
-    val definition: Definition = Definition(definition="The physiological faculty of taste.", example="My name is gust.")
-    val meaning: Meaning = Meaning(definitions = listOf(definition, definition, definition), partOfSpeech = "noun")
-    val wordItem: WordItem = WordItem(meanings = listOf(meaning, meaning, meaning), word = "asfdagfdfvsdgfsdgsdgsggfsdvgsgsgsgv", phonetic = "gusadsaasdasffasfdft")
-    val wordItems = listOf(wordItem, wordItem)
-
-    WordResultScreen(
-        wordItems = wordItems
-    )
 }

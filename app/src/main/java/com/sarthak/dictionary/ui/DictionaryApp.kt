@@ -91,10 +91,10 @@ fun DictionaryTopAppBar(title: String, modifier: Modifier = Modifier) {
                 text = title,
                 style = MaterialTheme.typography.headlineSmall
         ) },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF3B5B7E),
-            titleContentColor = Color.White,
-        ),
+//        colors = TopAppBarDefaults.topAppBarColors(
+//            containerColor = Color(0xFF3B5B7E),
+//            titleContentColor = Color.White,
+//        ),
         modifier = modifier
     )
 }
