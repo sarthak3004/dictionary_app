@@ -5,6 +5,8 @@ import android.os.Build
 import androidx.annotation.RequiresExtension
 import com.sarthak.dictionary.util.Result
 import com.sarthak.dictionary.data.api.DictionaryApi
+import com.sarthak.dictionary.data.local.Word
+import com.sarthak.dictionary.data.local.WordDao
 import com.sarthak.dictionary.data.mapper.toWordItem
 import com.sarthak.dictionary.domain.model.WordItem
 import com.sarthak.dictionary.domain.repository.DictionaryRepository
@@ -14,7 +16,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 class DictionaryRepositoryImpl @Inject constructor(
-    private val dictionaryApi: DictionaryApi
+    private val dictionaryApi: DictionaryApi,
+    private val wordDao: WordDao
 ): DictionaryRepository {
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override fun getWordResult(wordQuery: String): Flow<Result<List<WordItem>>> = flow {
@@ -35,4 +38,8 @@ class DictionaryRepositoryImpl @Inject constructor(
         val wordResult = wordResultDto.map { it.toWordItem() }
         emit(Result.Success(wordResult))
     }
+
+    override suspend fun addWord(word: Word) = wordDao.addWord(word)
+    override suspend fun removeWord(word: String) = wordDao.removeWord(word)
+    override fun getSearchHistory(currentQuery: String): Flow<List<String>> = wordDao.getSearchHistory(currentQuery)
 }

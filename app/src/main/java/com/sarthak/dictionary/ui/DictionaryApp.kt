@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,14 +15,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sarthak.dictionary.R
@@ -36,7 +33,6 @@ fun DictionaryApp() {
     val settingsViewModel: SettingsViewModel = hiltViewModel()
     val isDarkMode = settingsViewModel.isDarkMode.value
     DictionaryTheme(darkTheme = isDarkMode) {
-        // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -49,12 +45,27 @@ fun DictionaryApp() {
                 ) {
                     val dictionaryViewModel: DictionaryViewModel = hiltViewModel()
                     val dictionaryState = dictionaryViewModel.state
+                    val localFocusManager = LocalFocusManager.current
                     WordSearchBar(
                         searchQuery = dictionaryViewModel.searchQuery.value,
-                        onSearchQueryChange = { it -> dictionaryViewModel.updateSearchQuery(it) },
+                        onSearchQueryChange = { dictionaryViewModel.updateSearchQuery(it) },
                         onSearchClick = { dictionaryViewModel.onSearchClicked() },
+                        onFocusChange = {it: Boolean -> dictionaryViewModel.updateTextFieldFocus(it)},
+                        localFocusManager,
                         modifier = Modifier.padding(8.dp)
                     )
+                    if(dictionaryViewModel.isTextFieldFocused.value) {
+                        SearchSuggestionList(
+                            suggestionsList = dictionaryState.value.wordHistory,
+                            onCrossClick = { dictionaryViewModel.removeWordAndUpdateDB(it) },
+                            onWordClick = {
+                                dictionaryViewModel.updateSearchQuery(it)
+                                dictionaryViewModel.onSearchClicked()
+                            },
+                            localFocusManager
+                        )
+                    }
+
 
                     if(dictionaryState.value.isError) {
                         ErrorScreen(dictionaryState.value.errorMessage, modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -127,10 +138,4 @@ fun DictionaryTopAppBar(title: String,isDarkMode: Boolean, toggleDarkMode: (Bool
         },
         modifier = modifier
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewScreen() {
-
 }
