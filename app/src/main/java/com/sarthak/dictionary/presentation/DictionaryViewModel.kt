@@ -1,4 +1,4 @@
-package com.sarthak.dictionary.ui
+package com.sarthak.dictionary.presentation
 
 
 import android.util.Log

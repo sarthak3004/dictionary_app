@@ -70,7 +70,7 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun DictionaryTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colors = if (!darkTheme) {
