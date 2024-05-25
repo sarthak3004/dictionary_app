@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -31,30 +32,32 @@ import com.sarthak.dictionary.ui.theme.DictionaryTheme
 @Composable
 fun DictionaryApp() {
     val settingsViewModel: SettingsViewModel = hiltViewModel()
-    val isDarkMode = settingsViewModel.isDarkMode.value
-    DictionaryTheme(darkTheme = isDarkMode) {
+    val isDarkMode = settingsViewModel.isDarkMode.collectAsState()
+    DictionaryTheme(darkTheme = isDarkMode.value) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
             Scaffold(
-                topBar = { DictionaryTopAppBar(title = stringResource(id = R.string.app_name), isDarkMode = isDarkMode, toggleDarkMode = settingsViewModel::toggleDarkMode) }
+                topBar = { DictionaryTopAppBar(title = stringResource(id = R.string.app_name), isDarkMode = isDarkMode.value, toggleDarkMode = settingsViewModel::toggleDarkMode) }
             ) { innerPadding ->
                 Column(
                     modifier = Modifier.padding(innerPadding)
                 ) {
                     val dictionaryViewModel: DictionaryViewModel = hiltViewModel()
-                    val dictionaryState = dictionaryViewModel.state
+                    val dictionaryState = dictionaryViewModel.state.collectAsState()
                     val localFocusManager = LocalFocusManager.current
+                    val searchQuery = dictionaryViewModel.searchQuery.collectAsState()
+                    val isTextFieldFocused = dictionaryViewModel.isTextFieldFocused.collectAsState()
                     WordSearchBar(
-                        searchQuery = dictionaryViewModel.searchQuery.value,
+                        searchQuery = searchQuery.value,
                         onSearchQueryChange = { dictionaryViewModel.updateSearchQuery(it) },
                         onSearchClick = { dictionaryViewModel.onSearchClicked() },
                         onFocusChange = {it: Boolean -> dictionaryViewModel.updateTextFieldFocus(it)},
                         localFocusManager,
                         modifier = Modifier.padding(8.dp)
                     )
-                    if(dictionaryViewModel.isTextFieldFocused.value) {
+                    if(isTextFieldFocused.value) {
                         SearchSuggestionList(
                             suggestionsList = dictionaryState.value.wordHistory,
                             onCrossClick = { dictionaryViewModel.removeWordAndUpdateDB(it) },

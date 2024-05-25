@@ -10,6 +10,8 @@ import com.sarthak.dictionary.domain.repository.DictionaryRepository
 import com.sarthak.dictionary.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -19,14 +21,14 @@ import javax.inject.Inject
 class DictionaryViewModel @Inject constructor(
   private val dictionaryRepository: DictionaryRepository
 ): ViewModel() {
-    private val _searchQuery = mutableStateOf("")
-    val searchQuery: State<String> = _searchQuery
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _isTextFieldFocused = mutableStateOf(false)
-    val isTextFieldFocused: State<Boolean> = _isTextFieldFocused
+    private val _isTextFieldFocused = MutableStateFlow(false)
+    val isTextFieldFocused: StateFlow<Boolean> = _isTextFieldFocused
 
-    private val _state = mutableStateOf(DictionaryState())
-    val state: State<DictionaryState> = _state
+    private val _state = MutableStateFlow(DictionaryState())
+    val state: StateFlow<DictionaryState> = _state
 
     private var searchJob: Job? = null
 
