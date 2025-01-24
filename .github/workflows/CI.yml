@@ -75,8 +75,8 @@ jobs:
         with:
           api-level: 34
           target: 'android-34'
-          build-tools: '33.0.0"
-
+          build-tools: '33.0.0'
+          
       - name: Start Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
